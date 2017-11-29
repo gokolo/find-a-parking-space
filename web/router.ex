@@ -7,11 +7,14 @@ defmodule Takso.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    # plug Takso.Authentication, repo: Takso.Repo
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
+    plug Takso.Authentication, repo: Takso.Repo
   end
 
-  pipeline :browser_auth do  
+  pipeline :browser_auth do
     plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.EnsureAuthenticated, handler: Takso.Token
     plug Guardian.Plug.LoadResource
   end
   

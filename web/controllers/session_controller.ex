@@ -12,7 +12,7 @@ defmodule Takso.SessionController do
       case Takso.Authentication.check_credentials(conn, user, password) do
         {:ok, conn} ->    
               conn
-              |> Guardian.Plug.sign_in(user)
+              |> Guardian.Plug.sign_in(user, :access)
               |> put_flash(:info, "Welcome #{username}")
               |> redirect(to: page_path(conn, :index))
         {:error, conn} ->

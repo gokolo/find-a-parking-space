@@ -53,6 +53,7 @@ defmodule Takso.Web do
       import Takso.Router.Helpers
       import Takso.ErrorHelpers
       import Takso.Gettext
+      import Takso.ViewHelper
     end
   end
 
