@@ -5,7 +5,7 @@ Feature: Interactive search of parking space
   Scenario Outline: Searching via mobile phone
     Given the following parking spaces are available
           | location    | Zone  | price_per_hour | price_per_5mins |    zone_type   |
-          | Vanemuise 4 | ZoneA |       2        |       0.16      |       paid     |
+          | coord   | ZoneA |       2        |       0.16      |       paid     |
           | Vaksali 6   | ZoneB |       1        |       0.08      |       paid     |
           | Umera 1     | ZoneL |       0        |       0.00      | free_with_time |
           | Umera 2     | ZoneU |       0        |       0.00      |       free     |
