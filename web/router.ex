@@ -9,7 +9,7 @@ defmodule Takso.Router do
     plug :put_secure_browser_headers
     plug Guardian.Plug.VerifySession
     plug Guardian.Plug.LoadResource
-    plug Takso.Authentication, repo: Takso.Repo
+    #plug Takso.Authentication, repo: Takso.Repo
   end
 
   pipeline :browser_auth do

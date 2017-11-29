@@ -3,6 +3,7 @@ defmodule Takso.SessionAPIController do
     alias Takso.{Repo,User,Authentication}
   
     def create(conn, %{"username" => username, "password" => password}) do
+      
       user = Repo.get_by(User, username: username)    
       case Authentication.check_credentials(conn, user, password) do
       {:ok, conn} ->
