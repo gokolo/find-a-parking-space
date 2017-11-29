@@ -6,7 +6,7 @@ defmodule Takso.User do
     field :username, :string
     field :password, :string, virtual: true
     field :encrypted_password, :string
-    field :role, :string
+    field :role, :string, default: "customer"
     has_many :bookings, Takso.Booking
     
     timestamps()

@@ -13,6 +13,7 @@
   </div>
   <button type="submit" class="btn btn-default" v-on:click="login">Submit</button>
 </div>
+<div class="pull-right"><p>Not an User? <a href="/users/new">Sign up</a></p></div>
 </div>
 </div>
 </template>

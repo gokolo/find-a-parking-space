@@ -3,7 +3,7 @@
   <customer v-if="getUserRole() === 'customer'"></customer>
   <driver v-if="getUserRole() === 'taxi-driver'"></driver>
   <div>
-    <p class="pull-right">Already tired? <a href="/login" @click.prevent="logout">Log out!</a></p>
+          <button class="pull-right"><a href="/login" @click.prevent="logout">Log out!</a></button>
   </div>
 </div>  
 </template>
