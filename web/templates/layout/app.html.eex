@@ -7,22 +7,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Hello Takso!</title>
+    <title>Find A Parking Place!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body>
     <div class="container">
       <header class="header">
-        <ol class="breadcrumb pull-right">
-<%= if Guardian.Plug.current_resource(@conn) do %>
-          <li>Hello <%= Guardian.Plug.current_resource(@conn).username %></li>
-          <li><%= link "Log out", to: session_path(@conn, :delete, Guardian.Plug.current_resource(@conn)), method: "delete" %></li>
-<% else %>
-          <li><%= link "Log in", to: session_path(@conn, :new) %></li>
-<% end %>
-        </ol>
-        <span class="logo"></span>
+        <h2>Find Me A Parking Place</h2>
       </header>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
@@ -33,6 +25,7 @@
       </main>
 
     </div> <!-- /container -->
+    <script src="//maps.googleapis.com/maps/api/js?key=<%=Application.get_env(:takso, :gmaps_api_key) %>"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

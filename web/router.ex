@@ -32,12 +32,12 @@ defmodule Takso.Router do
   scope "/", Takso do
     pipe_through [:browser, :browser_auth]
     get "/", PageController, :index
+    resources "/users", UserController
   end
 
   scope "/", Takso do
     pipe_through [:browser, :browser_auth, :require_login]
 
-    resources "/users", UserController
     get "/bookings/summary", BookingController, :summary
     resources "/bookings", BookingController
     resources "/sessions", SessionController, only: [:delete]

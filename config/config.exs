@@ -26,6 +26,8 @@ config :logger, :console,
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
 
+config :takso, gmaps_api_key: "AIzaSyC0jUHlx7hO_U9ZqzuQ_48wtcMQiiHAhok"
+
 config :canary, unauthorized_handler: {Takso.SessionController, :unauthorized}
 
 config :guardian, Guardian,

@@ -1,24 +1,30 @@
 <template>
 <div>
   <div class="form-group">
-    <label class="control-label col-sm-3" for="pickup_address">Pickup address:</label>
+    <label class="control-label col-sm-3" for="destination_address">destination address:</label>
     <div class="col-sm-9">
-      <input type="text" class="form-control" id="pickup_address" v-model="pickup_address">
+      <input type="text" class="form-control" id="destination_address" v-model="destination_address">
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-sm-3" for="dropoff_address">Drop off address:</label>
+    <label class="control-label col-sm-3" for="booking_start_time">booking start time:</label>
     <div class="col-sm-9">
-      <input type="text" class="form-control" id="dropoff_address" v-model="dropoff_address">
+      <input type="text" class="form-control" id="booking_start_time" v-model="booking_start_time">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-3" for="booking_end_time">booking end time:</label>
+    <div class="col-sm-9">
+      <input type="text" class="form-control" id="booking_end_time" v-model="booking_end_time">
     </div>
   </div>
   <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
-      <button class="btn btn-default" v-on:click="submitBookingRequest">Submit</button>
+      <button class="btn btn-default" v-on:click="submitBookingRequest">Search Parking Place</button>
     </div>
   </div>
-  <div><textarea class="col-sm-12" style="background-color:#f4f7ff" rows="4" v-model="messages"></textarea></div>
-  <div id="map" style="width:100%;height:300px"></div>
+  <!-- <div><textarea class="col-sm-12" style="background-color:#f4f7ff" rows="4" v-model="messages"></textarea></div> -->
+  <div id="map" style="width:100%;height:400px"></div>
 </div>
 </template>
 
@@ -29,15 +35,16 @@ import auth from "./auth";
 export default {
     data: function() {
         return {
-            pickup_address: "Liivi 2",
-            dropoff_address: "",
+            destination_address: "",
+            booking_start_time: "",
+            booking_end_time: "",
             messages: ""
         }
     },
     methods: {
         submitBookingRequest: function() {
             axios.post("/api/bookings",
-                {pickup_address: this.pickup_address, dropoff_address: this.dropoff_address},
+                {destination_address: this.destination_address, booking_start_time: this.booking_start_time, booking_end_time: this.booking_end_time},
                 {headers: auth.getAuthHeader()})
                 .then(response => {
                     this.messages = response.data.msg;
@@ -57,6 +64,17 @@ export default {
                 this.messages += "\n" + payload.msg;
             });
         }
+        navigator.geolocation.getCurrentPosition(position => {
+        let loc = {lat: position.coords.latitude, lng: position.coords.longitude};
+        this.geocoder = new google.maps.Geocoder;
+        this.geocoder.geocode({location: loc}, (results, status) => {
+            if (status === "OK" && results[0])
+              console.log(results[0]);
+              this.destination_address = results[0].formatted_address;
+          });
+        this.map = new google.maps.Map(document.getElementById('map'), {zoom: 14, center: loc});
+        new google.maps.Marker({position: loc, map: this.map, title: "Pickup address"});
+      });
     }
 }
 </script>
