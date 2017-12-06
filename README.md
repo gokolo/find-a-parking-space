@@ -4,7 +4,7 @@ Project in Agile Software Development - MTAT.03.295 - University of Tartu
 
 ##Team memers
 
-Bejon Sarker
-Grace Achenyo
-Ansari Navedanjum
-Rando TÃµnisson
+* Bejon Sarker
+* Grace Achenyo
+* Ansari Navedanjum
+* Rando Tõnisson
