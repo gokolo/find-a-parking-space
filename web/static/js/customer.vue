@@ -64,17 +64,92 @@ export default {
                 this.messages += "\n" + payload.msg;
             });
         }
+        var loc
         navigator.geolocation.getCurrentPosition(position => {
-        let loc = {lat: position.coords.latitude, lng: position.coords.longitude};
-        this.geocoder = new google.maps.Geocoder;
-        this.geocoder.geocode({location: loc}, (results, status) => {
-            if (status === "OK" && results[0])
-              console.log(results[0]);
-              this.destination_address = results[0].formatted_address;
-          });
-        this.map = new google.maps.Map(document.getElementById('map'), {zoom: 14, center: loc});
-        new google.maps.Marker({position: loc, map: this.map, title: "Pickup address"});
-      });
+            loc = {lat: position.coords.latitude, lng: position.coords.longitude};
+            this.geocoder = new google.maps.Geocoder;
+            this.geocoder.geocode({location: loc}, (results, status) => {
+                if (status === "OK" && results[0])
+                console.log(results[0]);
+                console.log(loc)
+                this.destination_address = results[0].formatted_address;
+            });
+        });
+        
+        var mapOptions = {
+                zoom: 14, 
+                center: loc,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        
+        // init directions service
+        var dirService = new google.maps.DirectionsService();
+        
+
+
+        // highlight a street
+        var request = {
+        origin: "58.382530, 26.723936",
+        destination: "58.381962, 26.720085",
+        travelMode: google.maps.TravelMode.DRIVING
+        //waypoints: [{location:"48.12449,11.5536"}, {location:"48.12515,11.5569"}],
+        };
+        dirService.route(request, function(result, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            var dirRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+            dirRenderer.setMap(map);
+            dirRenderer.setDirections(result);
+        }
+        });
+
+        var request = {
+        origin: "58.382548, 26.723975",
+        destination: "58.384388, 26.723241",
+        travelMode: google.maps.TravelMode.DRIVING
+        //waypoints: [{location:"48.12449,11.5536"}, {location:"48.12515,11.5569"}],
+        };
+        dirService.route(request, function(result, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            var dirRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+            dirRenderer.setMap(map);
+            dirRenderer.setDirections(result);
+        }
+        });
+        new google.maps.Marker({position: this.loc, map: this.map, title: "Current Location"});
+
+        // var directionDisplay;
+        // var directionsService = new google.maps.DirectionsService();
+        // var map;
+
+        // var start = new google.maps.LatLng(58.382530, 26.723936);
+        // var myOptions = {
+        // zoom:14,
+        // mapTypeId: google.maps.MapTypeId.ROADMAP,
+        // center: start
+        // }
+        // map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+        // function renderDirections(result) { 
+        //     var directionsRenderer = new google.maps.DirectionsRenderer(); 
+        //     directionsRenderer.setMap(map); 
+        //     directionsRenderer.setDirections(result); 
+        // }     
+
+        // function requestDirections(start, end) { 
+        // directionsService.route({ 
+        //     origin: start, 
+        //     destination: end, 
+        //     travelMode: google.maps.DirectionsTravelMode.DRIVING 
+        // }, function(result) { 
+        //     renderDirections(result); 
+        // }); 
+        // } 
+
+        // requestDirections('(58.382530, 26.723936)', '(58.381962, 26.720085)'); 
+        // requestDirections('(58.382548, 26.723975)', '(58.384388, 26.723241)');  
+ 
+
     }
 }
 </script>
