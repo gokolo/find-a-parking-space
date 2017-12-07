@@ -1,21 +1,12 @@
 <template>
 <div>
+    <div>
+        <h4>{{message}}</h4>
+    </div>
   <div class="form-group">
     <label class="control-label col-sm-3" for="destination_address">destination address:</label>
     <div class="col-sm-9">
       <input type="text" class="form-control" id="destination_address" v-model="destination_address">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-sm-3" for="booking_start_time">booking start time:</label>
-    <div class="col-sm-9">
-      <input type="text" class="form-control" id="booking_start_time" v-model="booking_start_time">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-sm-3" for="booking_end_time">booking end time:</label>
-    <div class="col-sm-9">
-      <input type="text" class="form-control" id="booking_end_time" v-model="booking_end_time">
     </div>
   </div>
   <div class="form-group">
@@ -36,21 +27,64 @@ export default {
     data: function() {
         return {
             destination_address: "",
-            booking_start_time: "",
-            booking_end_time: "",
-            messages: ""
+            message: "",
+            places: [],
+            roads: [],
+            centerLocation: null
         }
     },
     methods: {
         submitBookingRequest: function() {
             axios.post("/api/bookings",
-                {destination_address: this.destination_address, booking_start_time: this.booking_start_time, booking_end_time: this.booking_end_time},
+                {destination_address: this.destination_address},
                 {headers: auth.getAuthHeader()})
                 .then(response => {
                     this.messages = response.data.msg;
+                    this.places = response.data.places;
+                    this.roads = response.data.roads;
+                    this.centerLocation = response.data.center;
+                    this.addParkingPlacesInMap(this.places, this.roads, this.centerLocation)
                 }).catch(error => {
                     console.log(error);
+                    this.places = []
+                    this.roads = []
+                    this.message = "couldn't get parking places"
+                    this.centerLocation = {lat: 58.382810, lng: 26.734172}
+                    this.addParkingPlacesInMap(this.places, this.roads, this.centerLocation)
                 });
+        },
+
+        addParkingPlacesInMap: function(places, roads, centerLocation){
+            var centerLoc = this.centerLocation;
+            var dirService = new google.maps.DirectionsService();
+            var mapOptions = {
+                zoom: 15, 
+                center: centerLoc,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            new google.maps.Marker({position: centerLoc, map: map, title: 'Destination'});
+            this.places.forEach(place => {
+                var loc = {lat: place.startLat, lng: place.startLng}
+                new google.maps.Marker({position: loc, map: map, title: "price in hour " + place.pricePerHour+ "euro/Hour" 
+                                                                        +"\n"+ "real time price " + place.pricePerMin+ "euro/5 Min"});
+            })
+            this.roads.forEach(road => {
+                var origin = road.startLat + ", " + road.startLng
+                var destination = road.endLat + ", " + road.endLng
+                var request = {
+                    origin: origin,
+                    destination: destination,
+                    travelMode: google.maps.TravelMode.DRIVING
+                };
+                dirService.route(request, function(result, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        var dirRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+                        dirRenderer.setMap(map);
+                        dirRenderer.setDirections(result);
+                    }
+                });
+            })
         }
     },
     mounted: function() {
@@ -106,6 +140,20 @@ export default {
         var request = {
         origin: "58.382548, 26.723975",
         destination: "58.384388, 26.723241",
+        travelMode: google.maps.TravelMode.DRIVING
+        //waypoints: [{location:"48.12449,11.5536"}, {location:"48.12515,11.5569"}],
+        };
+        dirService.route(request, function(result, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            var dirRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+            dirRenderer.setMap(map);
+            dirRenderer.setDirections(result);
+        }
+        });
+
+        var request = {
+        origin: "58.382810, 26.734172",
+        destination: "58.384231, 26.739822",
         travelMode: google.maps.TravelMode.DRIVING
         //waypoints: [{location:"48.12449,11.5536"}, {location:"48.12515,11.5569"}],
         };

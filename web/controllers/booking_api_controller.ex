@@ -1,13 +1,19 @@
 defmodule Takso.BookingAPIController do
+  import Ecto.Query, only: [from: 2]
+  alias Takso.{Taxi,Repo,Geolocator,Booking,ParkingPlace}
   use Takso.Web, :controller
   
   
-  def create(conn, %{"pickup_address" => pickup_address, "dropoff_address" => dropoff_address} = params) do
+  def create(conn, %{"destination_address" => destination_address} = params) do
     user = Guardian.Plug.current_resource(conn)
-    Takso.TaxiAllocator.start_link(user, pickup_address, dropoff_address)
+    query = from t in ParkingPlace, where: t.type == "PLACE", select: t
+    all_places = Repo.all(query)
+    query = from t in ParkingPlace, where: t.type == "ROAD", select: t
+    all_roads = Repo.all(query)
+    map_center = %{lat: 58.382810, lng: 26.734172}
     conn
     |> put_status(201)
-    |> json(%{msg: "We are processing your request"})
+    |> json(%{places: all_places, roads: all_roads, center: map_center})
   end
 
   def update(conn, %{"id" => booking_id, "status" => status} = params) do
