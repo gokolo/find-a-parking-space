@@ -12,7 +12,7 @@ alias Takso.{Repo,User,Taxi, ParkingPlace}
 |> Enum.map(fn taxi_data -> Taxi.changeset(%Taxi{}, taxi_data) end)
 |> Enum.each(fn changeset -> Repo.insert!(changeset) end)
 
-[%{startLat: 58.382548, startLng: 26.723975, endLat: 0.0, endLng: 0.0, type: "PLACE", region: "A", pricePerHour: 2 ,pricePerMin: 0.2 },
-%{startLat: 58.382810, startLng: 26.734172, endLat: 58.384231, endLng: 26.739822, type: "ROAD", region: "A", pricePerHour: 1 ,pricePerMin: 0.1 }]
+[%{startLat: 58.382548, startLng: 26.723975, endLat: 0.0, endLng: 0.0, type: "PLACE", region: "A", pricePerHour: 2 ,pricePerMin: 0.2, maximumSize: 2 },
+%{startLat: 58.382810, startLng: 26.734172, endLat: 58.384231, endLng: 26.739822, type: "ROAD", region: "A", pricePerHour: 1 ,pricePerMin: 0.1, maximumSize: 5 }]
 |> Enum.map(fn parking_data -> ParkingPlace.changeset(%ParkingPlace{}, parking_data) end)
 |> Enum.each(fn changeset -> Repo.insert!(changeset) end)

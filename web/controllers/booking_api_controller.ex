@@ -4,7 +4,7 @@ defmodule Takso.BookingAPIController do
   use Takso.Web, :controller
   
   
-  def create(conn, %{"destination_address" => destination_address} = params) do
+  def create(conn, %{"destination_address" => destination_address, "intented_stay_time" => intented_stay_time} = params) do
     user = Guardian.Plug.current_resource(conn)
     query = from t in ParkingPlace, where: t.type == "PLACE", select: t
     all_places = Repo.all(query)
@@ -13,7 +13,7 @@ defmodule Takso.BookingAPIController do
     map_center = %{lat: 58.382810, lng: 26.734172}
     conn
     |> put_status(201)
-    |> json(%{places: all_places, roads: all_roads, center: map_center})
+    |> json(%{places: all_places, roads: all_roads, center: map_center, intented_stay_time: intented_stay_time})
   end
 
   def update(conn, %{"id" => booking_id, "status" => status} = params) do

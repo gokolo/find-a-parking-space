@@ -1,5 +1,5 @@
 defmodule Takso.ParkingPlace do
-    @derive {Poison.Encoder, only: [:startLat, :startLng, :endLat, :endLng, :type, :region, :pricePerHour, :pricePerMin]}
+    @derive {Poison.Encoder, only: [:id, :startLat, :startLng, :endLat, :endLng, :type, :region, :pricePerHour, :pricePerMin, :maximumSize, :currentCars]}
     use Takso.Web, :model
   
     schema "parkingPlace" do
@@ -11,6 +11,8 @@ defmodule Takso.ParkingPlace do
       field :region, :string
       field :pricePerHour, :float
       field :pricePerMin, :float
+      field :maximumSize, :integer
+      field :currentCars, :integer, default: 0
   
       timestamps()
     end
@@ -20,7 +22,7 @@ defmodule Takso.ParkingPlace do
     """
     def changeset(struct, params \\ %{}) do
       struct
-      |> cast(params, [:startLat, :startLng, :endLat, :endLng, :type, :region, :pricePerHour, :pricePerMin])
+      |> cast(params, [:startLat, :startLng, :endLat, :endLng, :type, :region, :pricePerHour, :pricePerMin, :maximumSize, :currentCars])
     end
   end
   

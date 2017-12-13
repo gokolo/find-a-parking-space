@@ -10,6 +10,12 @@
     </div>
   </div>
   <div class="form-group">
+    <label class="control-label col-sm-3" for="intented_stay_time">intented stay time(in minute):</label>
+    <div class="col-sm-9">
+      <input type="number" class="form-control" id="intented_stay_time" v-model="intented_stay_time">
+    </div>
+  </div>
+  <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
       <button class="btn btn-default" v-on:click="submitBookingRequest">Search Parking Place</button>
     </div>
@@ -30,31 +36,34 @@ export default {
             message: "",
             places: [],
             roads: [],
-            centerLocation: null
+            centerLocation: null,
+            intented_stay_time: 0
         }
     },
     methods: {
         submitBookingRequest: function() {
             axios.post("/api/bookings",
-                {destination_address: this.destination_address},
+                {destination_address: this.destination_address, intented_stay_time: this.intented_stay_time},
                 {headers: auth.getAuthHeader()})
                 .then(response => {
                     this.messages = response.data.msg;
                     this.places = response.data.places;
                     this.roads = response.data.roads;
                     this.centerLocation = response.data.center;
-                    this.addParkingPlacesInMap(this.places, this.roads, this.centerLocation)
+                    this.intented_stay_time = response.data.intented_stay_time;
+                    this.addParkingPlacesInMap(this.places, this.roads, this.centerLocation, this.intented_stay_time)
                 }).catch(error => {
                     console.log(error);
                     this.places = []
                     this.roads = []
                     this.message = "couldn't get parking places"
                     this.centerLocation = {lat: 58.382810, lng: 26.734172}
-                    this.addParkingPlacesInMap(this.places, this.roads, this.centerLocation)
+                    this.intented_stay_time = null
+                    this.addParkingPlacesInMap(this.places, this.roads, this.centerLocation, this.intented_stay_time)
                 });
         },
 
-        addParkingPlacesInMap: function(places, roads, centerLocation){
+        addParkingPlacesInMap: function(places, roads, centerLocation, intented_stay_time){
             var centerLoc = this.centerLocation;
             var dirService = new google.maps.DirectionsService();
             var mapOptions = {
@@ -62,12 +71,15 @@ export default {
                 center: centerLoc,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
+            var pinColor = "800000";
+            var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+                new google.maps.Size(21, 34),
+                new google.maps.Point(0,0),
+                new google.maps.Point(10, 34));
             var map = new google.maps.Map(document.getElementById("map"), mapOptions);
             new google.maps.Marker({position: centerLoc, map: map, title: 'Destination'});
-            this.places.forEach(place => {
-                var loc = {lat: place.startLat, lng: place.startLng}
-                new google.maps.Marker({position: loc, map: map, title: "price in hour " + place.pricePerHour+ "euro/Hour" 
-                                                                        +"\n"+ "real time price " + place.pricePerMin+ "euro/5 Min"});
+            this.places.forEach(place =>{
+                this.handleMarker(place, map)
             })
             this.roads.forEach(road => {
                 var origin = road.startLat + ", " + road.startLng
@@ -84,7 +96,46 @@ export default {
                         dirRenderer.setDirections(result);
                     }
                 });
+
+                this.handleMarker(road, map)
             })
+        },
+        
+        handleMarker: function(place, map){
+            var loc = {lat: place.startLat, lng: place.startLng}
+                if(this.intented_stay_time == null | this.intented_stay_time <= 0){
+                    var marker = new google.maps.Marker({position: loc, map: map, title: "price in hour " + place.pricePerHour+ "euro/Hour" 
+                                                                            +"\n"+ "real time price " + place.pricePerMin+ "euro/5 Min"});
+                    marker.set("id",place.id)
+                    marker.set("intented_stay", this.intented_stay_time)
+                    window.google.maps.event.addListener(marker, 'click', function(){
+                        var intented_stay_time = window.prompt("Please confirm intented staying time (min):", marker.get("intented_stay"));
+                        if (intented_stay_time == null | intented_stay_time <= 0) {
+                            this.message = "please enter valid time"
+                        } else {
+                            console.log("call the api now", marker.get("id"))
+                        }
+                        
+                    });
+                }
+                else{
+                    var hourlyBasedCost = (Math.floor(this.intented_stay_time / 60) * place.pricePerHour + ((this.intented_stay_time % 60 != 0) ? place.pricePerHour : 0)).toFixed(2)
+                    var realTimeBasedCost = (Math.floor(this.intented_stay_time / 5) * place.pricePerMin + ((this.intented_stay_time % 5 != 0) ? place.pricePerMin : 0)).toFixed(2)
+                    var marker = new google.maps.Marker({position: loc, map: map, title: "price in hour " + place.pricePerHour+ "euro/Hour" 
+                                                                            +"\n"+ "real time price " + place.pricePerMin+ "euro/5 Min"
+                                                                            +"\n"+ "hourly based estimated cost "+ hourlyBasedCost + " euro"
+                                                                            +"\n"+ "real time based estimated cost "+realTimeBasedCost+ " euro"});
+                    marker.set("id",place.id)
+                    marker.set("intented_stay", this.intented_stay_time)
+                    window.google.maps.event.addListener(marker, 'click', function(){
+                        var intented_stay_time = window.prompt("Please confirm intented staying time (min):", marker.get("intented_stay"));
+                        if (intented_stay_time == null | intented_stay_time <= 0) {
+                            this.message = "please enter valid time"
+                        } else {
+                            console.log("call the api now", marker.get("id"))
+                        }
+                    });
+                }
         }
     },
     mounted: function() {
@@ -165,39 +216,6 @@ export default {
         }
         });
         new google.maps.Marker({position: this.loc, map: this.map, title: "Current Location"});
-
-        // var directionDisplay;
-        // var directionsService = new google.maps.DirectionsService();
-        // var map;
-
-        // var start = new google.maps.LatLng(58.382530, 26.723936);
-        // var myOptions = {
-        // zoom:14,
-        // mapTypeId: google.maps.MapTypeId.ROADMAP,
-        // center: start
-        // }
-        // map = new google.maps.Map(document.getElementById("map"), myOptions);
-
-        // function renderDirections(result) { 
-        //     var directionsRenderer = new google.maps.DirectionsRenderer(); 
-        //     directionsRenderer.setMap(map); 
-        //     directionsRenderer.setDirections(result); 
-        // }     
-
-        // function requestDirections(start, end) { 
-        // directionsService.route({ 
-        //     origin: start, 
-        //     destination: end, 
-        //     travelMode: google.maps.DirectionsTravelMode.DRIVING 
-        // }, function(result) { 
-        //     renderDirections(result); 
-        // }); 
-        // } 
-
-        // requestDirections('(58.382530, 26.723936)', '(58.381962, 26.720085)'); 
-        // requestDirections('(58.382548, 26.723975)', '(58.384388, 26.723241)');  
- 
-
     }
 }
 </script>

@@ -11,6 +11,8 @@ defmodule Takso.Repo.Migrations.AddParkingPlace do
       add :region, :string
       add :pricePerHour, :float
       add :pricePerMin, :float
+      add :maximumSize, :integer
+      add :currentCars, :integer
 
       timestamps()
     end
