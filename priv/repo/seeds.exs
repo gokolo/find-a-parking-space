@@ -48,7 +48,9 @@ alias Takso.{Repo,User,Taxi, ParkingPlace}
 %{startLat: 58.380078, startLng: 26.708538, endLat: 0.0, endLng: 0.0, type: "PLACE", region: "A", pricePerHour: 2 ,pricePerMin: 0.32, maximumSize: 3},
 %{startLat: 58.371981, startLng: 26.713866, endLat: 58.371446, endLng: 26.714268, type: "ROAD", region: "B", pricePerHour: 1 ,pricePerMin: 0.16, maximumSize: 12},
 %{startLat: 58.378148, startLng: 26.707224, endLat: 58.377647, endLng: 26.707503, type: "ROAD", region: "B", pricePerHour: 1 ,pricePerMin: 0.16, maximumSize: 14},
-%{startLat: 58.377611, startLng: 26.705182, endLat: 58.377144, endLng: 58.377144, type: "ROAD", region: "B", pricePerHour: 1 ,pricePerMin: 0.16, maximumSize: 10}
+%{startLat: 58.377611, startLng: 26.705182, endLat: 58.377144, endLng: 58.377144, type: "ROAD", region: "B", pricePerHour: 1 ,pricePerMin: 0.16, maximumSize: 10},
+%{startLat: 58.386376, startLng: 26.714957, endLat: 58.386798, endLng: 26.715343, type: "ROAD", region: "B", pricePerHour: 1 ,pricePerMin: 0.16, maximumSize: 12},
+%{startLat: 58.382414, startLng: 26.703480, endLat: 58.382996, endLng: 26.704338, type: "ROAD", region: "B", pricePerHour: 1 ,pricePerMin: 0.16, maximumSize: 10}
 ]
 |> Enum.map(fn parking_data -> ParkingPlace.changeset(%ParkingPlace{}, parking_data) end)
 |> Enum.each(fn changeset -> Repo.insert!(changeset) end)
