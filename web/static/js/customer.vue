@@ -98,7 +98,7 @@ export default {
                                                                                 },suppressMarkers: true});
                         }else if(road.region == "B"){
                             dirRenderer = new google.maps.DirectionsRenderer({ polylineOptions: {
-                                                                                    strokeColor: "yellow"
+                                                                                    strokeColor: "blue"
                                                                                 },suppressMarkers: true});
                         }else{
                             dirRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
@@ -125,7 +125,7 @@ export default {
                             this.message = "please enter valid time"
                         } else {
                             // axios.get("/#/booking/"+intented_stay_time+"/"+ marker.get("id"))
-                            window.location.replace("/#/booking/"+intented_stay_time+"/"+ marker.get("id"));
+                            window.location.replace("/#/booking/"+intented_stay_time+"/"+ marker.get("id")+"/0/0");
                         }
                         
                     });
@@ -139,13 +139,15 @@ export default {
                                                                             +"\n"+ "real time based estimated cost "+realTimeBasedCost+ " euro"});
                     marker.set("id",place.id)
                     marker.set("intented_stay", this.intented_stay_time)
+                    marker.set("hourlyBasedCost", hourlyBasedCost)
+                    marker.set("realTimeBasedCost", realTimeBasedCost)
                     window.google.maps.event.addListener(marker, 'click', function(){
                         var intented_stay_time = window.prompt("Please confirm intented staying time (min):", marker.get("intented_stay"));
                         if (intented_stay_time == null | intented_stay_time <= 0) {
                             this.message = "please enter valid time"
                         } else {
                             // axios.get("/#/booking/"+intented_stay_time+"/"+ marker.get("id"))
-                            window.location.replace("/#/booking/"+intented_stay_time+"/"+ marker.get("id"));
+                            window.location.replace("/#/booking/"+intented_stay_time+"/"+ marker.get("id")+"/"+marker.get("hourlyBasedCost")+"/"+marker.get("realTimeBasedCost"));
                         }
                     });
                 }

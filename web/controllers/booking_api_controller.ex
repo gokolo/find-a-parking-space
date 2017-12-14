@@ -1,6 +1,8 @@
 defmodule Takso.BookingAPIController do
   import Ecto.Query, only: [from: 2]
-  alias Takso.{Taxi,Repo,Geolocator,Booking,ParkingPlace}
+  alias Ecto.{Changeset,Multi}
+  import Canary.Plugs
+  alias Takso.{Taxi,Repo,Geolocator,Booking,ParkingPlace,ParkingBooking}
   use Takso.Web, :controller
   
   
@@ -31,4 +33,29 @@ defmodule Takso.BookingAPIController do
     |> put_status(200)
     |> json(%{msg: "Notification sent to the customer"})
   end
+
+  def create2(conn, %{"paying_status" => paying_status, "estimated_time" => estimated_time, 
+                      "estimated_cost" => estimated_cost, "place_id" => place_id} = params) do
+    user = Guardian.Plug.current_resource(conn)
+    query = from t in ParkingPlace, where: t.id == ^place_id, select: t
+    place = Repo.one(query)
+    if(place.maximumSize > place.currentCars) do
+      change_set = ParkingPlace.changeset(place)
+                  |> Changeset.put_change(:currentCars, place.currentCars + 1)
+    else
+      conn
+      |> put_status(409)
+      |> json(%{message: "this place is already alocated. please try another one"})
+    end
+    user = conn.assigns.current_user
+    changeset = ParkingBooking.changeset(%ParkingBooking{}, %{user_id: user.id})
+                |> Changeset.put_change(:paying_status, paying_status)
+                |> Changeset.put_change(:estimated_time, estimated_time)
+                |> Changeset.put_change(:estimated_cost, estimated_cost)
+    booking = Repo.insert!(changeset)
+    conn
+    |> put_status(201)
+    |> json(%{message: "booking request served successfully"})
+  end
+
 end
