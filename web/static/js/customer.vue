@@ -98,7 +98,7 @@ export default {
                                                                                 },suppressMarkers: true});
                         }else if(road.region == "B"){
                             dirRenderer = new google.maps.DirectionsRenderer({ polylineOptions: {
-                                                                                    strokeColor: "yellow"
+                                                                                    strokeColor: "green"
                                                                                 },suppressMarkers: true});
                         }else{
                             dirRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
