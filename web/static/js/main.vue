@@ -1,5 +1,6 @@
 <template>
 <div>
+  <router-view></router-view>
   <customer v-if="getUserRole() === 'customer'"></customer>
   <driver v-if="getUserRole() === 'taxi-driver'"></driver>
   <div>

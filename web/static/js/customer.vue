@@ -91,7 +91,18 @@ export default {
                 };
                 dirService.route(request, function(result, status) {
                     if (status == google.maps.DirectionsStatus.OK) {
-                        var dirRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+                        var dirRenderer
+                        if(road.region == "A"){
+                            dirRenderer = new google.maps.DirectionsRenderer({ polylineOptions: {
+                                                                                    strokeColor: "red"
+                                                                                },suppressMarkers: true});
+                        }else if(road.region == "B"){
+                            dirRenderer = new google.maps.DirectionsRenderer({ polylineOptions: {
+                                                                                    strokeColor: "yellow"
+                                                                                },suppressMarkers: true});
+                        }else{
+                            dirRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+                        }
                         dirRenderer.setMap(map);
                         dirRenderer.setDirections(result);
                     }
@@ -113,7 +124,8 @@ export default {
                         if (intented_stay_time == null | intented_stay_time <= 0) {
                             this.message = "please enter valid time"
                         } else {
-                            console.log("call the api now", marker.get("id"))
+                            // axios.get("/#/booking/"+intented_stay_time+"/"+ marker.get("id"))
+                            window.location.replace("/#/booking/"+intented_stay_time+"/"+ marker.get("id"));
                         }
                         
                     });
@@ -132,7 +144,8 @@ export default {
                         if (intented_stay_time == null | intented_stay_time <= 0) {
                             this.message = "please enter valid time"
                         } else {
-                            console.log("call the api now", marker.get("id"))
+                            // axios.get("/#/booking/"+intented_stay_time+"/"+ marker.get("id"))
+                            window.location.replace("/#/booking/"+intented_stay_time+"/"+ marker.get("id"));
                         }
                     });
                 }
