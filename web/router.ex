@@ -64,5 +64,6 @@ defmodule Takso.Router do
     delete "/sessions/:id", SessionAPIController, :delete
     post "/bookings", BookingAPIController, :create
     patch "/bookings/:id", BookingAPIController, :update
+    post "/book-place", BookingAPIController, :create2
   end
 end

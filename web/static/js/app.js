@@ -5,6 +5,7 @@ import login from "./login";
 import customer from "./customer";
 import driver from "./driver";
 import main from "./main";
+import booking from "./booking";
 
 import "phoenix";
 import "axios";
@@ -23,7 +24,7 @@ const requireAuth = (to, _from, next) => {
 }
 
 const afterAuth = (_to, from, next) => {
-  if (auth.authenticated()) {
+  if (auth.authenticated()) {                     
     next(from.path);
   } else {
     next();
@@ -34,11 +35,13 @@ Vue.use(VueRouter);
 
 Vue.component("customer", customer);
 Vue.component("driver", driver);
+Vue.component("booking", booking);
 
 var router = new VueRouter({
     routes: [
         { path: '/login', component: login, beforeEnter: afterAuth },
         { path: '/', component: main, beforeEnter: requireAuth },
+        { path: '/booking/:intented_stay/:place_id/:hourlyBasedCost/:realTimeBasedCost', component: booking, beforeEnter: requireAuth},
         { path: '*', redirect: '/login' }
     ]
 });
