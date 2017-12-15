@@ -6,12 +6,19 @@ defmodule Takso.BookingAPIController do
   use Takso.Web, :controller
   
   def find_by_user(conn,_params) do
-    all_bookings = Repo.all(ParkingBooking)
+    user = Guardian.Plug.current_resource(conn)
+    query = from b in ParkingBooking, where: b.user_id == 5, select: b 
+    all_user_bookings = Repo.all(query)
     conn
     |> put_status(201)
-    |> json(%{bookings: all_bookings})   
+    |> json(%{bookings: all_user_bookings})   
   end
 
+  def index(conn, _params) do
+    bookings = Repo.all(from b in Booking, where: b.user_id == ^conn.assigns.current_user.id)
+    render conn, "index.html", bookings: bookings
+  end
+  
   def create(conn, %{"destination_address" => destination_address, "intented_stay_time" => intented_stay_time} = params) do
     user = Guardian.Plug.current_resource(conn)
     query = from t in ParkingPlace, where: t.type == "PLACE", select: t

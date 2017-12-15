@@ -7,13 +7,6 @@ alias Takso.{Repo,User,Taxi, ParkingPlace}
 |> Enum.map(fn user_data -> User.changeset(%User{}, user_data) end)
 |> Enum.each(fn changeset -> Repo.insert!(changeset) end)
 
-[%{estimated_cost: 5.50, estimated_time: 1200, paying_status: "paid", user_id: 5},
-%{estimated_cost: 2.50, estimated_time: 0200, paying_status: "paid", user_id: 5},
-%{estimated_cost: 1.00, estimated_time: 1400, paying_status: "paid", user_id: 5},
-%{estimated_cost: 11.50, estimated_time: 0800, paying_status: "paid", user_id: 2}]
-|> Enum.map(fn booking_data -> ParkingBooking.changeset(%ParkingBooking{}, booking_data) end)
-|> Enum.each(fn changeset -> Repo.insert!(changeset) end)
-
 [%{username: "bilbo", location: "Juhan Liivi 2", status: "available"},
  %{username: "frodo", location: "Raatuse 22", status: "available"}]
 |> Enum.map(fn taxi_data -> Taxi.changeset(%Taxi{}, taxi_data) end)
@@ -61,4 +54,12 @@ alias Takso.{Repo,User,Taxi, ParkingPlace}
 %{startLat: 58.382414, startLng: 26.703480, endLat: 58.382996, endLng: 26.704338, type: "ROAD", region: "B", pricePerHour: 1 ,pricePerMin: 0.16, maximumSize: 10}
 ]
 |> Enum.map(fn parking_data -> ParkingPlace.changeset(%ParkingPlace{}, parking_data) end)
+|> Enum.each(fn changeset -> Repo.insert!(changeset) end)
+
+
+[%{estimated_cost: 5.50, estimated_time: 1200, paying_status: "paid", user_id: 5},
+%{estimated_cost: 2.50, estimated_time: 0200, paying_status: "paid", user_id: 5},
+%{estimated_cost: 1.00, estimated_time: 1400, paying_status: "paid", user_id: 5},
+%{estimated_cost: 11.50, estimated_time: 0800, paying_status: "paid", user_id: 2}]
+|> Enum.map(fn booking_data -> ParkingBooking.changeset(%ParkingBooking{}, booking_data) end)
 |> Enum.each(fn changeset -> Repo.insert!(changeset) end)
