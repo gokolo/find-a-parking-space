@@ -5,7 +5,13 @@ defmodule Takso.BookingAPIController do
   alias Takso.{Taxi,Repo,Geolocator,Booking,ParkingPlace,ParkingBooking}
   use Takso.Web, :controller
   
-  
+  def find_by_user(conn,_params) do
+    all_bookings = Repo.all(ParkingBooking)
+    conn
+    |> put_status(201)
+    |> json(%{bookings: all_bookings})   
+  end
+
   def create(conn, %{"destination_address" => destination_address, "intented_stay_time" => intented_stay_time} = params) do
     user = Guardian.Plug.current_resource(conn)
     query = from t in ParkingPlace, where: t.type == "PLACE", select: t
@@ -17,6 +23,8 @@ defmodule Takso.BookingAPIController do
     |> put_status(201)
     |> json(%{places: all_places, roads: all_roads, center: map_center, intented_stay_time: intented_stay_time})
   end
+
+ 
 
   def update(conn, %{"id" => booking_id, "status" => status} = params) do
     # The following line will broadcast a message through the channel "customer:lobby" announcing that the taxi will arrive in 5 mins

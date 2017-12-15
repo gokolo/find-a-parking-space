@@ -2,7 +2,7 @@ defmodule Takso.Booking do
   use Takso.Web, :model
 
   schema "bookings" do
-    field :pickup_address, :string
+    field :destination_address, :string
     field :dropoff_address, :string
     field :status, :string
     belongs_to :user, Takso.User

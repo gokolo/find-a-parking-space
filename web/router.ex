@@ -63,7 +63,7 @@ defmodule Takso.Router do
     pipe_through [:api, :auth_api]
     delete "/sessions/:id", SessionAPIController, :delete
     post "/bookings", BookingAPIController, :create
-    patch "/bookings/:id", BookingAPIController, :update
-    post "/book-place", BookingAPIController, :create2
+    patch "/bookings/:id", BookingAPIController, :update    
+    get "/bookings", BookingAPIController, :find_by_user
   end
 end

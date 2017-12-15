@@ -7,10 +7,18 @@ alias Takso.{Repo,User,Taxi, ParkingPlace}
 |> Enum.map(fn user_data -> User.changeset(%User{}, user_data) end)
 |> Enum.each(fn changeset -> Repo.insert!(changeset) end)
 
+[%{estimated_cost: 5.50, estimated_time: 1200, paying_status: "paid", user_id: 5},
+%{estimated_cost: 2.50, estimated_time: 0200, paying_status: "paid", user_id: 5},
+%{estimated_cost: 1.00, estimated_time: 1400, paying_status: "paid", user_id: 5},
+%{estimated_cost: 11.50, estimated_time: 0800, paying_status: "paid", user_id: 2}]
+|> Enum.map(fn booking_data -> ParkingBooking.changeset(%ParkingBooking{}, booking_data) end)
+|> Enum.each(fn changeset -> Repo.insert!(changeset) end)
+
 [%{username: "bilbo", location: "Juhan Liivi 2", status: "available"},
  %{username: "frodo", location: "Raatuse 22", status: "available"}]
 |> Enum.map(fn taxi_data -> Taxi.changeset(%Taxi{}, taxi_data) end)
 |> Enum.each(fn changeset -> Repo.insert!(changeset) end)
+
 [%{startLat: 58.382548, startLng: 26.723975, endLat: 0.0, endLng: 0.0, type: "PLACE", region: "A", pricePerHour: 2 ,pricePerMin: 0.32, maximumSize: 2},
 %{startLat: 58.382810, startLng: 26.734172, endLat: 58.384231, endLng: 26.739822, type: "ROAD", region: "A", pricePerHour: 2 ,pricePerMin: 0.32, maximumSize: 5},
 %{startLat: 58.379386, startLng: 26.716583, endLat: 58.379740, endLng: 26.715178, type: "ROAD", region: "A", pricePerHour: 2 ,pricePerMin: 0.32, maximumSize: 18},

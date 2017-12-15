@@ -38,5 +38,6 @@ defmodule Takso.Endpoint do
     key: "_takso_key",
     signing_salt: "ZO3Qqsiu"
 
+  plug Corsica, origins: "*", allow_headers: ["content-type", "authorization"]
   plug Takso.Router
 end

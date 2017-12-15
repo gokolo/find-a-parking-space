@@ -9,7 +9,7 @@ defmodule Takso.SessionAPIController do
           {:ok, jwt, _full_claims} = Guardian.encode_and_sign(user, :token)
           conn
           |> put_status(201)
-          |> json(%{token: jwt, role: user.role})
+          |> json(%{token: jwt, user_id: user.id, username: user.username, name: user.name, role: user.role})
       {:error, conn} ->
           conn
           |> put_status(400)
