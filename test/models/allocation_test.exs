@@ -1,6 +1,5 @@
 defmodule Takso.AllocationTest do
   use Takso.ModelCase
-
   alias Takso.Allocation
 
   @valid_attrs %{status: "some status"}
