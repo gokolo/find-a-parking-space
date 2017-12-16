@@ -1,5 +1,5 @@
 defmodule Takso.ParkingBooking do
-  @derive {Poison.Encoder, only: [:id, :estimated_cost, :estimated_time, :paying_status, :user_id]}
+  @derive {Poison.Encoder, only: [:id, :estimated_cost, :estimated_time, :paying_status, :user_id, :inserted_at]}
     use Takso.Web, :model
   
     schema "parkingBookings" do
@@ -14,7 +14,7 @@ defmodule Takso.ParkingBooking do
   
     def changeset(struct, params \\ %{}) do
       struct
-      |> cast(params, [:estimated_cost, :estimated_time, :paying_status])
+      |> cast(params, [:estimated_cost, :estimated_time, :paying_status, :user_id])
     end
   end
   

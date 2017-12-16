@@ -47,15 +47,38 @@ defmodule Takso.BookingAPIController do
       |> put_status(409)
       |> json(%{message: "this place is already alocated. please try another one"})
     end
-    user = conn.assigns.current_user
-    changeset = ParkingBooking.changeset(%ParkingBooking{}, %{user_id: user.id})
+    user_id = conn.assigns.current_user.id
+    IO.inspect(user_id)
+    changeset = ParkingBooking.changeset(%ParkingBooking{}, %{user_id: user_id})
                 |> Changeset.put_change(:paying_status, paying_status)
                 |> Changeset.put_change(:estimated_time, estimated_time)
                 |> Changeset.put_change(:estimated_cost, estimated_cost)
     booking = Repo.insert!(changeset)
+    IO.inspect(booking)
     conn
     |> put_status(201)
     |> json(%{message: "booking request served successfully"})
+  end
+
+  def summary(conn, %{}=params) do
+    user_id = conn.assigns.current_user.id
+    query  = from t in ParkingBooking, where: t.user_id == ^user_id, select: t
+    all_bookings = Repo.all(query)
+    IO.inspect(all_bookings)
+    conn
+    |> put_status(200)
+    |> json(all_bookings)
+  end
+
+  def pay(conn, %{"id" => booking_id} = params) do
+    query = from t in ParkinBooking, where: t.id == ^booking_id, select: t
+    booking = Repo.one(query)
+    ParkinBooking.changeset(booking) |> Changeset.put_change(:paying_status, "PAID")
+    |> Repo.update
+
+    conn
+    |> put_status(200)
+    |> json(%{message: "payment successfull"})
   end
 
 end

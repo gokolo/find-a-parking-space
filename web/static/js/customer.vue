@@ -22,6 +22,9 @@
   </div>
   <!-- <div><textarea class="col-sm-12" style="background-color:#f4f7ff" rows="4" v-model="messages"></textarea></div> -->
   <div id="map" style="width:100%;height:400px"></div>
+  <div>
+      <button class="btn btn-default"><a href="/#/bookings/summary">summary</a></button>
+  </div>
 </div>
 </template>
 
