@@ -2,7 +2,7 @@ defmodule Takso.BookingAPIController do
   import Ecto.Query, only: [from: 2]
   alias Ecto.{Changeset,Multi}
   import Canary.Plugs
-  alias Takso.{Taxi,Repo,Geolocator,Booking,ParkingPlace,ParkingBooking}
+  alias Takso.{Taxi,Repo,Geolocator,Booking,ParkingPlace,ParkingBooking,BookingNotification}
   use Takso.Web, :controller
   
   
@@ -26,7 +26,7 @@ defmodule Takso.BookingAPIController do
     # Note that, additionally, the line above should be relocated to the GenServer
     # Consider using the following line (note that accept_booking is already defined in TaxiAllocator)
     
-    Takso.TaxiAllocator.handle_booking(String.to_atom("#{booking_id}"), status)
+    Takso.BookingNotification.handle_booking(String.to_atom("#{booking_id}"), status)
     
 
     conn
@@ -35,13 +35,14 @@ defmodule Takso.BookingAPIController do
   end
 
   def create2(conn, %{"paying_status" => paying_status, "estimated_time" => estimated_time, 
-                      "estimated_cost" => estimated_cost, "place_id" => place_id} = params) do
+                      "estimated_cost" => estimated_cost, "place_id" => place_id, "pay_type" => pay_type} = params) do
     user = Guardian.Plug.current_resource(conn)
     query = from t in ParkingPlace, where: t.id == ^place_id, select: t
     place = Repo.one(query)
     if(place.maximumSize > place.currentCars) do
-      change_set = ParkingPlace.changeset(place)
-                  |> Changeset.put_change(:currentCars, place.currentCars + 1)
+      ParkingPlace.changeset(place)
+      |> Changeset.put_change(:currentCars, place.currentCars + 1)
+      |> Repo.update
     else
       conn
       |> put_status(409)
@@ -53,7 +54,10 @@ defmodule Takso.BookingAPIController do
                 |> Changeset.put_change(:paying_status, paying_status)
                 |> Changeset.put_change(:estimated_time, estimated_time)
                 |> Changeset.put_change(:estimated_cost, estimated_cost)
+                |> Changeset.put_change(:place_id, place_id)
+                |> Changeset.put_change(:pay_type, pay_type)
     booking = Repo.insert!(changeset)
+    BookingNotification.start_link(conn.assigns.current_user.username, estimated_time, booking.id, place_id, 0)
     IO.inspect(booking)
     conn
     |> put_status(201)
@@ -71,9 +75,9 @@ defmodule Takso.BookingAPIController do
   end
 
   def pay(conn, %{"id" => booking_id} = params) do
-    query = from t in ParkinBooking, where: t.id == ^booking_id, select: t
+    query = from t in ParkingBooking, where: t.id == ^booking_id, select: t
     booking = Repo.one(query)
-    ParkinBooking.changeset(booking) |> Changeset.put_change(:paying_status, "PAID")
+    ParkingBooking.changeset(booking) |> Changeset.put_change(:paying_status, "PAID")
     |> Repo.update
 
     conn

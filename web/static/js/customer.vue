@@ -25,6 +25,14 @@
   <div>
       <button class="btn btn-default"><a href="/#/bookings/summary">summary</a></button>
   </div>
+  <div class="well">
+  <div class="alert alert-info" v-if="visible">
+    Parking Time is about to finish.
+    <button class="btn btn-default" v-on:click="submitDecision({status: 'accepted'})">Extend for an hour</button>
+    <button class="btn btn-danger" v-on:click="submitDecision({status: 'rejected'})">Reject</button>
+  </div>
+  <div id="map-driver" style="width:100%;height:300px"></div>
+</div>
 </div>
 </template>
 
@@ -40,10 +48,23 @@ export default {
             places: [],
             roads: [],
             centerLocation: null,
-            intented_stay_time: 0
+            intented_stay_time: 0,
+            channelMessage: null,
+            visible:false
         }
     },
     methods: {
+        submitDecision: function (decision) {
+            if (this.channelMessage) {
+                axios.patch("/api/bookings/" +this.channelMessage.booking_id, 
+                    {status: decision.status}, {headers: auth.getAuthHeader()})
+                .then( response => {
+                    console.log("Received:", response );
+                }).catch( e => console.log("Oops"));
+                this.channelMessage = null;
+                this.visible = false;
+            }
+        },
         submitBookingRequest: function() {
             axios.post("/api/bookings",
                 {destination_address: this.destination_address, intented_stay_time: this.intented_stay_time},
@@ -164,7 +185,9 @@ export default {
                 .receive("error", resp => { console.log("Unable to join", resp) });
 
             channel.on("requests", payload => {
-                this.messages += "\n" + payload.msg;
+                console.log(payload)
+                this.channelMessage = payload;
+                this.visible = true
             });
         }
         var loc

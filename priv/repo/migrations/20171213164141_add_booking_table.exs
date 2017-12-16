@@ -8,7 +8,8 @@ defmodule Takso.Repo.Migrations.AddBookingTable do
       add :estimated_time, :integer
       add :paying_status, :string
       add :user_id, :integer
-
+      add :place_id, :integer
+      add :pay_type, :string
       
       timestamps()
     end

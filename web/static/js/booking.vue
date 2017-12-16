@@ -57,24 +57,24 @@ export default {
       var paying_status
       var estimated_time = this.$route.params.intented_stay
       var estimated_cost
-      if(this.paymentOption == "PAY_LATER"){
+      if(this.paymentOption === "PAY_LATER"){
         paying_status = "UNPAID"
       }else{
         paying_status = "PAID"
       }
 
-      if(this.paymentType == "REAL_TIME"){
-        estimated_cost = this.hourlyBasedCost
-      }else{
+      if(this.paymentType === "REAL_TIME"){
         estimated_cost = this.realTimeBasedCost
-        paying_status = "PAID"
+      }else{
+        estimated_cost = this.hourlyBasedCost
       }
         axios.post("/api/book-place", 
             {
               paying_status: paying_status,
               estimated_time: parseInt(estimated_time),
               estimated_cost: parseFloat(estimated_cost),
-              place_id: parseInt(this.place_id)
+              place_id: parseInt(this.place_id),
+              pay_type: this.paymentType
             }, 
             {headers: auth.getAuthHeader()})
         .then( response => {
