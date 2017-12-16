@@ -1,0 +1,22 @@
+Running tests, small guide for Windows usage with Windows PowerShell
+
+1. open powershell
+2. go to app root (cd bla\bla\parking)
+3. run: $env:MIX_ENV="test"
+4. run: mix ecto.reset
+5. run: mix ecto.setup
+
+Running tests:
+mix test .\test\controllers\login_controller_test.exs
+mix test .\test\controllers\page_controller_test.exs
+
+mix test .\test\views\page_view_test.exs
+mix test .\test\views\layout_view_test.exs
+
+mix test .\test\support\channel_case.ex
+mix test .\test\support\conn_case.ex
+mix test .\test\support\model_case.ex
+
+mix test .\test\models\allocation_test.exs
+mix test .\test\models\booking_test.exs
+mix test .\test\models\user_test.exs
