@@ -51,6 +51,7 @@ defmodule Takso.Mixfile do
       {:mock, "~> 0.2.0", only: :test},
       {:ex_machina, "~> 2.1", only: :test},
       {:faker, "~> 0.9", only: :test},
+      {:corsica, "~> 1.0"},
       {:httpoison, "~> 0.13"},
       {:poison, "~> 3.1"}
     ]
