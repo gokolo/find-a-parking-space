@@ -60,6 +60,7 @@ defmodule Takso.Router do
   end
 
   scope "/api", Takso do
+    post "/sign-up", UserAPIController, :create
     pipe_through [:api, :auth_api]
     delete "/sessions/:id", SessionAPIController, :delete
     post "/bookings", BookingAPIController, :create
