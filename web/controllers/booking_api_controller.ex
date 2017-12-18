@@ -53,7 +53,7 @@ defmodule Takso.BookingAPIController do
     changeset = ParkingBooking.changeset(%ParkingBooking{}, %{user_id: user_id})
                 |> Changeset.put_change(:paying_status, paying_status)
                 |> Changeset.put_change(:estimated_time, estimated_time)
-                |> Changeset.put_change(:estimated_cost, estimated_cost)
+                |> Changeset.put_change(:estimated_cost, estimated_cost/1)
                 |> Changeset.put_change(:place_id, place_id)
                 |> Changeset.put_change(:pay_type, pay_type)
     booking = Repo.insert!(changeset)
