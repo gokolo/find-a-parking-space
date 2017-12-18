@@ -5,6 +5,10 @@ defmodule Takso.User do
     field :name, :string
     field :username, :string
     field :password, :string, virtual: true
+    field :card_holder_name, :string
+    field :card_number, :string
+    field :card_cvc, :string
+    field :expiry_date, :string
     field :encrypted_password, :string
     field :role, :string, default: "customer"
     has_many :bookings, Takso.Booking
@@ -17,7 +21,7 @@ defmodule Takso.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :username, :password, :role])
+    |> cast(params, [:name, :username, :password, :card_holder_name, :card_number, :card_cvc, :expiry_date,  :role, ])
     |> validate_required([:name, :username, :password, :role])
     |> encrypt_password
   end
