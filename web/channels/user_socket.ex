@@ -3,7 +3,6 @@ defmodule Takso.UserSocket do
 
   ## Channels
   # channel "room:*", Takso.RoomChannel
-  channel "driver:*", Takso.DriverChannel
   channel "customer:*", Takso.CustomerChannel
 
   ## Transports

@@ -2,7 +2,7 @@ defmodule Takso.BookingAPIController do
   import Ecto.Query, only: [from: 2]
   alias Ecto.{Changeset,Multi}
   import Canary.Plugs
-  alias Takso.{Taxi,Repo,Geolocator,Booking,ParkingPlace,ParkingBooking,BookingNotification}
+  alias Takso.{Repo,Geolocator,ParkingPlace,ParkingBooking,BookingNotification}
   use Takso.Web, :controller
   
   
