@@ -17,4 +17,21 @@ defmodule Takso.UserAPIController do
             |> json(%{message: "Failed to Create User"})
         end
     end
+
+    def update(conn, %{"card_cvc" => card_cvc, "card_holder_name" => card_holder_name, 
+    "card_number" => card_number, "expiry_date" => expiry_date, "id" => id, "password" => password, "username" => username} = params) do
+        user = Repo.get!(User, id)
+        changeset = User.changeset(user, params)
+        Repo.update!(changeset)
+        conn
+        |> put_status(200)
+        |> json(%{message: "Successfully Updated"})
+      end
+
+      def get(conn, %{"id" => id}) do
+        user = Repo.get!(User, id)
+        conn
+        |> put_status(200)
+        |> json(user)    
+      end
 end

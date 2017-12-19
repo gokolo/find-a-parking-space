@@ -1,4 +1,6 @@
 defmodule Takso.User do
+
+  @derive {Poison.Encoder, only: [:id, :username, :card_holder_name, :card_number, :card_cvc, :expiry_date]}
   use Takso.Web, :model
 
   schema "users" do
@@ -11,7 +13,6 @@ defmodule Takso.User do
     field :expiry_date, :string
     field :encrypted_password, :string
     field :role, :string, default: "customer"
-    has_many :bookings, Takso.Booking
     
     timestamps()
   end
@@ -21,7 +22,7 @@ defmodule Takso.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :username, :password, :card_holder_name, :card_number, :card_cvc, :expiry_date,  :role, ])
+    |> cast(params, [:name, :username, :password, :card_holder_name, :card_number, :card_cvc, :expiry_date, :role ])
     |> validate_required([:name, :username, :password, :role])
     |> encrypt_password
   end
