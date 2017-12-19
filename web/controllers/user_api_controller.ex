@@ -10,7 +10,7 @@ defmodule Takso.UserAPIController do
           {:ok, changeset} ->
             conn
             |> put_status(201)
-            |> json(%{message: "Successfully Singed Up"})
+            |> json(%{message: "Successfully Signed Up"})
           {:error, changeset} ->
             conn
             |> put_status(409)
