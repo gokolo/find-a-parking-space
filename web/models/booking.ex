@@ -5,7 +5,6 @@ defmodule Takso.Booking do
     field :pickup_address, :string
     field :dropoff_address, :string
     field :status, :string
-    belongs_to :user, Takso.User
 
     timestamps()
   end
