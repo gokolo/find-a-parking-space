@@ -18,18 +18,19 @@ defmodule Takso.UserAPIController do
         end
     end
 
-    def update(conn, %{"card_cvc" => card_cvc, "card_holder_name" => card_holder_name, 
-    "card_number" => card_number, "expiry_date" => expiry_date, "id" => id, "password" => password, "username" => username} = params) do
-        user = Repo.get!(User, id)
+    def update(conn, params) do
+        user = Guardian.Plug.current_resource(conn)
+        user = Repo.get!(User, user.id)
         changeset = User.changeset(user, params)
-        Repo.update!(changeset)
+        updated_user = Repo.update!(changeset)
         conn
         |> put_status(200)
-        |> json(%{message: "Successfully Updated"})
+        |> json(updated_user)
       end
 
-      def get(conn, %{"id" => id}) do
-        user = Repo.get!(User, id)
+      def get(conn, %{}) do
+        user = Guardian.Plug.current_resource(conn)
+        user = Repo.get!(User, user.id)
         conn
         |> put_status(200)
         |> json(user)    

@@ -1,6 +1,6 @@
 defmodule Takso.User do
 
-  @derive {Poison.Encoder, only: [:id, :username, :card_holder_name, :card_number, :card_cvc, :expiry_date]}
+  @derive {Poison.Encoder, only: [:id, :name, :username, :card_holder_name, :card_number, :card_cvc, :expiry_date]}
   use Takso.Web, :model
 
   schema "users" do

@@ -61,8 +61,6 @@ defmodule Takso.Router do
 
   scope "/api", Takso do
     post "/sign-up", UserAPIController, :create
-    get "/user/:id", UserAPIController, :get
-    put "/user/:id", UserAPIController, :update
     pipe_through [:api, :auth_api]
     delete "/sessions/:id", SessionAPIController, :delete
     post "/bookings", BookingAPIController, :create
@@ -70,6 +68,7 @@ defmodule Takso.Router do
     get "/bookings/summary", BookingAPIController, :summary
     patch "/pay/:id", BookingAPIController, :pay
     post "/book-place", BookingAPIController, :create2
-    
+    get "/user/", UserAPIController, :get
+    put "/user/", UserAPIController, :update
   end
 end
